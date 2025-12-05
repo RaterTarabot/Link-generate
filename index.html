@@ -2,272 +2,82 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER_CLOUD | Premium Access</title>
-    
-    <!-- Google Fonts for High-Tech Look -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RATER TARA - Live App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- SDK CODE -->
+    <script src='//libtl.com/sdk.js' data-zone='10265360' data-sdk='show_10265360'></script>
 
     <style>
-        /* --- ULTRA TECH PREMIUM CSS --- */
-        :root {
-            --neon-blue: #00f3ff;
-            --neon-pink: #bc13fe;
-            --dark-bg: #050505;
-            --glass-bg: rgba(20, 20, 20, 0.8);
-            --border-glow: 0 0 10px rgba(0, 243, 255, 0.5);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--dark-bg);
-            color: #fff;
-            font-family: 'Share Tech Mono', monospace;
-            overflow-x: hidden;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
-
-        /* Glitch Logo Effect */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px var(--neon-blue);
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--neon-blue);
-            font-size: 0.9rem;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--neon-blue);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--neon-blue);
-            animation: blink 1.5s infinite;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 100px 20px 60px;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--neon-blue), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            color: #aaa;
-            max-width: 600px;
-            margin: 0 auto 40px;
-            font-size: 1.1rem;
-        }
-
-        /* Cyber Button */
-        .cyber-btn {
-            position: relative;
-            display: inline-block;
-            padding: 15px 40px;
-            color: var(--neon-blue);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: bold;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            overflow: hidden;
-            transition: 0.5s;
-            background: transparent;
-            border: 1px solid var(--neon-blue);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-        }
-
-        .cyber-btn:hover {
-            background: var(--neon-blue);
-            color: #000;
-            box-shadow: 0 0 20px var(--neon-blue), 0 0 50px var(--neon-blue);
-        }
-
-        /* Grid System */
-        .grid-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            padding: 40px 20px;
-        }
-
-        .tech-card {
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid rgba(0, 243, 255, 0.1);
-            padding: 30px;
-            position: relative;
-            transition: 0.3s;
-            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
-        }
-
-        .tech-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--neon-blue);
-            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.1);
-        }
-
-        .tech-card h3 {
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .tech-card i {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        .card-action {
-            margin-top: 20px;
-            display: block;
-            text-align: right;
-            color: var(--neon-blue);
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        
-        .card-action:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            padding: 30px;
-            margin-top: 50px;
-            background: #000;
-            color: #555;
-            font-size: 0.8rem;
-        }
-
-        /* Animations */
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .grid-container { grid-template-columns: 1fr; }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #000; font-family: 'Poppins', sans-serif; overflow: hidden; height: 100vh; width: 100vw; user-select: none; }
+        .video-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: #000; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent 20%, transparent 60%, rgba(0,0,0,0.9)); padding: 15px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; pointer-events: auto; }
+        .profile-pill { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); padding: 4px 15px 4px 4px; border-radius: 30px; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 0, 85, 0.3); }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #ff0055; object-fit: cover; }
+        .live-badge { background: #ff0055; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: bold; animation: pulse 1s infinite; }
+        .tap-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; border: 1px solid #ff0055; animation: bounce 2s infinite; pointer-events: none; }
+        .sidebar { position: absolute; right: 10px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; pointer-events: auto; }
+        .icon-item i { font-size: 2rem; color: white; text-shadow: 0 2px 5px black; }
+        .icon-item span { color: white; font-size: 0.7rem; font-weight: 600; margin-top: 5px; }
+        .chat-box { height: 200px; width: 80%; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; mask-image: linear-gradient(to top, black 80%, transparent 100%); margin-bottom: 60px; pointer-events: auto; }
+        .comment { font-size: 0.9rem; color: white; margin-bottom: 8px; text-shadow: 0 1px 2px black; }
+        .username { color: #ffcc00; font-weight: bold; margin-right: 5px; }
+        .click-trap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; cursor: pointer; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes bounce { 0%, 100% {transform: translate(-50%, -50%);} 50% {transform: translate(-50%, -60%);} }
     </style>
 </head>
 <body>
-
-    <!-- Header -->
-    <header>
-        <div class="logo">NEXUS<span style="color:var(--neon-blue)">CORE</span></div>
-        <div class="status">
-            <div class="status-dot"></div>
-            SERVER: ONLINE
-        </div>
-    </header>
-
-    <!-- Main Hero -->
-    <section class="hero">
-        <h1>SECURE DATA <br> <span style="color: var(--neon-pink);">ACCESS POINT</span></h1>
-        <p>ডিক্রিপ্টেড সার্ভার থেকে হাই-স্পিড ফাইল ট্রান্সফার এবং প্রিমিয়াম এক্সেস পান। সিস্টেম সম্পূর্ণ সিকিউর।</p>
-        
-        <!-- Main CTA Button -->
-        <a href="#" class="cyber-btn">INITIALIZE ACCESS</a>
-    </section>
-
-    <!-- Content Grid -->
-    <div class="grid-container">
-
-        <!-- Item 1 -->
-        <div class="tech-card">
-            <i class="fas fa-microchip"></i>
-            <h3>System Patch V.01</h3>
-            <p>লেটেস্ট সফটওয়্যার আপডেট এবং প্রিমিয়াম আনলক ফাইলস। ১০০% ভেরিফাইড।</p>
-            <a href="#" class="card-action">DOWNLOAD NOW >></a>
-        </div>
-
-        <!-- Item 2 -->
-        <div class="tech-card">
-            <i class="fas fa-shield-halved"></i>
-            <h3>Secure VPN Config</h3>
-            <p>হাই স্পিড গেমিং এবং স্ট্রিমিং এর জন্য প্রাইভেট কনফিগারেশন ফাইল।</p>
-            <a href="#" class="card-action">GET CONFIG >></a>
-        </div>
-
-        <!-- Item 3 -->
-        <div class="tech-card">
-            <i class="fas fa-database"></i>
-            <h3>Database Access</h3>
-            <p>এক্সক্লুসিভ কন্টেন্ট এবং ভিডিও আর্কাইভে সরাসরি প্রবেশ করুন।</p>
-            <a href="#" class="card-action">OPEN ARCHIVE >></a>
-        </div>
-        
-        <!-- Item 4 -->
-        <div class="tech-card">
-            <i class="fas fa-bolt"></i>
-            <h3>Turbo Speed Pack</h3>
-            <p>নেটওয়ার্ক স্পিড বুস্টার এবং ল্যাগ ফিক্স টুলস।</p>
-            <a href="#" class="card-action">ACTIVATE >></a>
-        </div>
-
+    <div class="video-container">
+        <!-- video.mp4 ফাইলটি ফোল্ডারে থাকতে হবে -->
+        <video id="myVideo" autoplay loop muted playsinline>
+            <source src="video.mp4" type="video/mp4">
+        </video>
     </div>
-
-    <!-- Terminal Effect Footer -->
-    <footer>
-        <p>SYSTEM ID: 10265360 | PROTOCOL: SECURE</p>
-        <p>&copy; 2024 NEXUS INC. ALL SYSTEMS OPERATIONAL.</p>
-    </footer>
-
-    <!-- ============================================== -->
-    <!-- YOUR SDK CODE INSERTED EXACTLY AS REQUESTED -->
-    <!-- ============================================== -->
-    <script src='//libtl.com/sdk.js' data-zone='10265360' data-sdk='show_10265360'></script>
-
+    <div class="ui-layer">
+        <div class="header">
+            <div class="profile-pill">
+                <img src="https://i.ibb.co/v4JqW0X/girl-avatar.jpg" class="avatar" alt="User">
+                <div><h4 style="color:white; font-size:0.9rem;">Rater Tara 🔥</h4><span style="color:#ddd; font-size:0.6rem;">124K Followers</span></div>
+                <i class="fas fa-plus-circle" style="color:#ff0055; margin-left:5px;"></i>
+            </div>
+            <div class="live-badge">LIVE 15.2K</div>
+        </div>
+        <div class="tap-hint" id="hintBox">
+            <i class="fas fa-volume-up" style="font-size: 2rem; margin-bottom: 10px;"></i>
+            <h3>Tap Screen</h3><p style="font-size: 0.8rem;">To Unmute & Join</p>
+        </div>
+        <div class="sidebar">
+            <div class="icon-item"><i class="fas fa-heart" style="color:#ff0055;"></i><span>Like</span></div>
+            <div class="icon-item"><i class="fas fa-comment-dots"></i><span>Chat</span></div>
+            <div class="icon-item"><i class="fas fa-share" style="color:#00ff88;"></i><span>Share</span></div>
+        </div>
+        <div class="chat-box" id="chatList"></div>
+    </div>
+    <div class="click-trap" onclick="handleUserClick()"></div>
+    <script>
+        function handleUserClick() {
+            var video = document.getElementById('myVideo');
+            var hint = document.getElementById('hintBox');
+            if (video.muted) { video.muted = false; video.play(); hint.style.display = 'none'; } 
+            else { console.log("Ad Triggered"); }
+        }
+        const comments = [{name:"King_Khan",text:"Sound on koro plz 😍"},{name:"Rifat_Boss",text:"Nice video 🔥"},{name:"Love_Bird",text:"Kothai tumi?"}];
+        function addFakeComment() {
+            const list = document.getElementById('chatList');
+            const random = comments[Math.floor(Math.random() * comments.length)];
+            const div = document.createElement('div');
+            div.className = 'comment';
+            div.innerHTML = `<span class="username">${random.name}:</span> ${random.text}`;
+            list.appendChild(div);
+            list.scrollTop = list.scrollHeight;
+        }
+        setInterval(addFakeComment, 1500);
+    </script>
 </body>
 </html>
