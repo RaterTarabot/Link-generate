@@ -3,81 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RATER TARA - Live App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <title>Telegram Live Stream</title>
     
-    <!-- SDK CODE -->
+    <!-- Icons & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- SDK Code -->
     <script src='//libtl.com/sdk.js' data-zone='10265360' data-sdk='show_10265360'></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #000; font-family: 'Poppins', sans-serif; overflow: hidden; height: 100vh; width: 100vw; user-select: none; }
-        .video-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: #000; }
+        body { background-color: #18222d; font-family: 'Roboto', sans-serif; overflow: hidden; height: 100vh; width: 100vw; user-select: none; }
+        .video-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         video { width: 100%; height: 100%; object-fit: cover; }
-        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent 20%, transparent 60%, rgba(0,0,0,0.9)); padding: 15px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; pointer-events: auto; }
-        .profile-pill { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); padding: 4px 15px 4px 4px; border-radius: 30px; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 0, 85, 0.3); }
-        .avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #ff0055; object-fit: cover; }
-        .live-badge { background: #ff0055; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: bold; animation: pulse 1s infinite; }
-        .tap-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px; border: 1px solid #ff0055; animation: bounce 2s infinite; pointer-events: none; }
-        .sidebar { position: absolute; right: 10px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; pointer-events: auto; }
-        .icon-item i { font-size: 2rem; color: white; text-shadow: 0 2px 5px black; }
-        .icon-item span { color: white; font-size: 0.7rem; font-weight: 600; margin-top: 5px; }
-        .chat-box { height: 200px; width: 80%; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; mask-image: linear-gradient(to top, black 80%, transparent 100%); margin-bottom: 60px; pointer-events: auto; }
-        .comment { font-size: 0.9rem; color: white; margin-bottom: 8px; text-shadow: 0 1px 2px black; }
-        .username { color: #ffcc00; font-weight: bold; margin-right: 5px; }
-        .click-trap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; cursor: pointer; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        @keyframes bounce { 0%, 100% {transform: translate(-50%, -50%);} 50% {transform: translate(-50%, -60%);} }
+        .ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent 20%, transparent 70%, rgba(0,0,0,0.9)); }
+        
+        /* Header */
+        .header { display: flex; align-items: center; padding: 15px; background: linear-gradient(180deg, rgba(0,0,0,0.7), transparent); }
+        .back-btn { color: white; font-size: 1.2rem; margin-right: 15px; cursor: pointer; }
+        .channel-info { flex: 1; }
+        .channel-name { color: white; font-weight: 600; text-shadow: 0 1px 2px black; }
+        .live-status { display: flex; align-items: center; gap: 5px; color: #ddd; font-size: 0.8rem; }
+        .live-dot { width: 6px; height: 6px; background: #ff5e5e; border-radius: 50%; animation: blink 1s infinite; }
+        .join-btn { background: #2AABEE; color: white; border: none; padding: 6px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; animation: pulseBtn 2s infinite; }
+
+        /* Tap Hint */
+        .tap-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; opacity: 0.8; }
+        .tap-msg { background: rgba(0,0,0,0.6); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; margin-top: 10px; }
+
+        /* Bottom Controls */
+        .bottom-section { padding: 10px 15px 20px 15px; display: flex; flex-direction: column; gap: 10px; }
+        .chat-container { height: 250px; overflow-y: hidden; mask-image: linear-gradient(to top, black 80%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; margin-bottom: 5px; }
+        .message { margin-bottom: 6px; font-size: 0.95rem; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.8); animation: slideUp 0.2s ease; }
+        .user-name { font-weight: 600; margin-right: 6px; cursor: pointer; }
+
+        /* REAL INPUT STYLE */
+        .controls-bar { display: flex; align-items: center; gap: 10px; }
+        .real-input { flex: 1; background: rgba(22, 33, 44, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; height: 45px; padding: 0 15px; color: white; font-size: 1rem; backdrop-filter: blur(5px); outline: none; }
+        .real-input::placeholder { color: #ccc; }
+        
+        .action-circle { width: 45px; height: 45px; border-radius: 50%; background: rgba(22, 33, 44, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; color: white; font-size: 1.2rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.1s; }
+        .action-circle:active { transform: scale(0.9); }
+        .send-btn { background: #2AABEE; color: white; border: none; }
+
+        /* Floating Hearts & Trap */
+        .heart-container { position: absolute; right: 20px; bottom: 100px; width: 50px; height: 400px; pointer-events: none; }
+        .heart { position: absolute; bottom: 0; font-size: 2rem; animation: float 2s linear forwards; }
+        .fullscreen-trap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; cursor: pointer; }
+        
+        /* Animations */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes float { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-300px) scale(1.5); opacity: 0; } }
+        @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 0 10px #2AABEE; } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
+
     <div class="video-container">
-        <!-- video.mp4 ফাইলটি ফোল্ডারে থাকতে হবে -->
-        <video id="myVideo" autoplay loop muted playsinline>
+        <video id="tgVideo" autoplay loop muted playsinline>
             <source src="video.mp4" type="video/mp4">
         </video>
     </div>
+
     <div class="ui-layer">
         <div class="header">
-            <div class="profile-pill">
-                <img src="https://i.ibb.co/v4JqW0X/girl-avatar.jpg" class="avatar" alt="User">
-                <div><h4 style="color:white; font-size:0.9rem;">Rater Tara 🔥</h4><span style="color:#ddd; font-size:0.6rem;">124K Followers</span></div>
-                <i class="fas fa-plus-circle" style="color:#ff0055; margin-left:5px;"></i>
+            <i class="fas fa-arrow-left back-btn" onclick="triggerAd()"></i>
+            <div class="channel-info">
+                <div class="channel-name">Rater Tara 🔥 (Premium)</div>
+                <div class="live-status"><div class="live-dot"></div> <span id="viewers">12.5K</span> viewers</div>
             </div>
-            <div class="live-badge">LIVE 15.2K</div>
+            <button class="join-btn" onclick="joinChannel()">JOIN</button>
         </div>
-        <div class="tap-hint" id="hintBox">
-            <i class="fas fa-volume-up" style="font-size: 2rem; margin-bottom: 10px;"></i>
-            <h3>Tap Screen</h3><p style="font-size: 0.8rem;">To Unmute & Join</p>
+
+        <div class="tap-overlay" id="tapHint">
+            <i class="fas fa-volume-mute" style="font-size: 3rem; color: rgba(255,255,255,0.7);"></i>
+            <div class="tap-msg">Tap to Unmute</div>
         </div>
-        <div class="sidebar">
-            <div class="icon-item"><i class="fas fa-heart" style="color:#ff0055;"></i><span>Like</span></div>
-            <div class="icon-item"><i class="fas fa-comment-dots"></i><span>Chat</span></div>
-            <div class="icon-item"><i class="fas fa-share" style="color:#00ff88;"></i><span>Share</span></div>
+
+        <div class="heart-container" id="heartBox"></div>
+        <div class="bottom-section">
+            <div class="chat-container" id="chatList"></div>
+
+            <div class="controls-bar">
+                <!-- Real Input Field for User -->
+                <input type="text" class="real-input" id="userComment" placeholder="Write a comment...">
+                
+                <!-- Send Button (Triggers Telegram API) -->
+                <div class="action-circle send-btn" onclick="sendToTelegram()">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                
+                <div class="action-circle" onclick="shareLive()"><i class="fas fa-share"></i></div>
+                <div class="action-circle" style="color: #ff5e5e;" onclick="fakeLike()"><i class="fas fa-heart"></i></div>
+            </div>
         </div>
-        <div class="chat-box" id="chatList"></div>
     </div>
-    <div class="click-trap" onclick="handleUserClick()"></div>
+
+    <div class="fullscreen-trap" id="mainTrap" onclick="handleFirstClick()"></div>
+
     <script>
-        function handleUserClick() {
-            var video = document.getElementById('myVideo');
-            var hint = document.getElementById('hintBox');
-            if (video.muted) { video.muted = false; video.play(); hint.style.display = 'none'; } 
-            else { console.log("Ad Triggered"); }
+        // ==========================================
+        // CONFIGURATION (এখানে আপনার তথ্য দিন)
+        // ==========================================
+        const BOT_TOKEN = "8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA"; // যেমন: 708823:AAFg...
+        const CHAT_ID = "-1003119670905";     // যেমন: -100123456789
+        // ==========================================
+
+        function triggerAd() { console.log("SDK Triggered!"); }
+
+        function joinChannel() {
+            triggerAd();
+            window.location.href = "https://t.me/+g7XFPRuwH85iZTI9";
         }
-        const comments = [{name:"King_Khan",text:"Sound on koro plz 😍"},{name:"Rifat_Boss",text:"Nice video 🔥"},{name:"Love_Bird",text:"Kothai tumi?"}];
-        function addFakeComment() {
-            const list = document.getElementById('chatList');
-            const random = comments[Math.floor(Math.random() * comments.length)];
+
+        function shareLive() {
+            triggerAd();
+            const shareUrl = "https://t.me/ratertara_bot?start=live_share_2025";
+            if (navigator.share) { navigator.share({ title: 'Live', url: shareUrl }); }
+            else { navigator.clipboard.writeText(shareUrl); alert("Link Copied!"); }
+        }
+
+        function handleFirstClick() {
+            const video = document.getElementById('tgVideo');
+            if(video.muted) {
+                video.muted = false; video.play();
+                document.getElementById('tapHint').style.display = 'none';
+                document.getElementById('mainTrap').style.display = 'none';
+                triggerAd();
+            }
+        }
+
+        // --- REAL TELEGRAM MESSAGE SENDER ---
+        function sendToTelegram() {
+            triggerAd(); // Earn money first!
+
+            const input = document.getElementById('userComment');
+            const message = input.value;
+
+            if (message.trim() === "") return; // খালি মেসেজ যাবে না
+
+            // 1. Show message in the Fake Chat immediately (Local Feedback)
+            const chatList = document.getElementById('chatList');
             const div = document.createElement('div');
-            div.className = 'comment';
-            div.innerHTML = `<span class="username">${random.name}:</span> ${random.text}`;
-            list.appendChild(div);
-            list.scrollTop = list.scrollHeight;
+            div.className = 'message';
+            div.innerHTML = `<span class="user-name" style="color:#00ff88">You:</span> ${message}`;
+            chatList.appendChild(div);
+            chatList.scrollTop = chatList.scrollHeight;
+            
+            // Clear Input
+            input.value = "";
+
+            // 2. Send to Telegram API (Background)
+            // যদি আপনি টোকেন সেট না করেন, এটি কাজ করবে না।
+            if(BOT_TOKEN !== "8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA") {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent("Live Comment: " + message)}`;
+                
+                fetch(url).then(response => {
+                    console.log("Sent to Telegram");
+                }).catch(err => {
+                    console.error("Error sending message", err);
+                });
+            } else {
+                alert("Please set your Bot Token in the code!");
+            }
         }
-        setInterval(addFakeComment, 1500);
+
+        // --- FAKE SYSTEM (SAME AS BEFORE) ---
+        function fakeLike() {
+            triggerAd();
+            const heartBox = document.getElementById('heartBox');
+            const heart = document.createElement('i');
+            heart.className = 'fas fa-heart heart';
+            heart.style.left = Math.random() * 20 + 'px';
+            heart.style.color = '#ff5e5e';
+            heartBox.appendChild(heart);
+            setTimeout(() => heart.remove(), 2000);
+        }
+
+        const names = ["Rafiq", "Sagor", "Rifat", "Jannat", "Priya", "Akash", "Rana"];
+        const msgs = ["Hi", "Hello", "Wow", "Nice", "Hot", "Sound plz", "Love u"];
+        
+        function addFakeChat() {
+            const chatList = document.getElementById('chatList');
+            const name = names[Math.floor(Math.random() * names.length)];
+            const msg = msgs[Math.floor(Math.random() * msgs.length)];
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.innerHTML = `<span class="user-name" style="color:#2AABEE">${name}:</span> ${msg}`;
+            chatList.appendChild(div);
+            chatList.scrollTop = chatList.scrollHeight;
+        }
+        setInterval(addFakeChat, 800);
+
+        setInterval(() => {
+            document.getElementById('viewers').innerText = (12.5 + Math.random() * 0.5).toFixed(1) + 'K';
+        }, 2000);
     </script>
 </body>
 </html>
