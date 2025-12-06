@@ -8,7 +8,7 @@
     <!-- SDK Integration -->
     <script src='//libtl.com/sdk.js' data-zone='10265360' data-sdk='show_10265360'></script>
     
-    <!-- Firebase SDK (v8.10.0 - Compatible with your config) -->
+    <!-- Firebase SDK (Compatible Version) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
@@ -101,6 +101,11 @@
             width: 100%; padding: 12px; background: var(--fb-blue); color: white; border: none;
             border-radius: 5px; font-weight: bold; cursor: pointer;
         }
+        
+        /* Telegram Login Style */
+        .tg-login-wrapper {
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;
+        }
 
         /* TABS & CONTENT */
         .nav-tabs { display: flex; justify-content: space-around; background: var(--fb-blue); padding-bottom: 5px; }
@@ -139,6 +144,9 @@
         .f-media { width: 100%; border-radius: 5px; margin-bottom: 10px; }
         .f-actions { display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 8px; font-size: 13px; color: #555; }
         .f-btn { cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .f-btn.liked { color: var(--fb-blue); font-weight: bold; }
+        
+        .like-names { font-size: 12px; color: #666; margin-top: 5px; padding: 5px; background: #f0f2f5; border-radius: 5px; display: none; }
 
         /* COMMENT SECTION */
         .comment-section { margin-top: 10px; background: #f0f2f5; padding: 10px; border-radius: 10px; display: none; }
@@ -161,7 +169,22 @@
     <div id="setupModal" class="setup-modal">
         <div class="setup-box">
             <h2 style="color:var(--fb-blue); margin-bottom:10px;">Join Rater Tara</h2>
-            <p style="color:#666; margin-bottom:20px;">আপনার প্রোফাইল সেটআপ করুন</p>
+            
+            <!-- TELEGRAM LOGIN WIDGET START -->
+            <div class="tg-login-wrapper">
+                <p style="color:#555; font-size:14px; margin-bottom:10px;">👇 টেলিগ্রাম দিয়ে ১ ক্লিকে লগিন করুন</p>
+                <!-- IMPORTANT: Replace 'YOUR_BOT_USERNAME' with your actual bot username (e.g., RaterTaraBot) without @ -->
+                <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                        data-telegram-login="ratertara_bot" 
+                        data-size="large" 
+                        data-userpic="true" 
+                        data-radius="10" 
+                        data-onauth="onTelegramAuth(user)" 
+                        data-request-access="write"></script>
+            </div>
+            <!-- TELEGRAM LOGIN WIDGET END -->
+
+            <p style="color:#666; margin-bottom:10px; font-size:12px;">অথবা ম্যানুয়ালি সেটআপ করুন</p>
             <div style="margin-bottom:15px;">
                 <img id="previewAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:80px; height:80px; border-radius:50%;">
             </div>
@@ -208,6 +231,10 @@
             <div class="guide-step">
                 <h4>১. পাবলিক পোস্ট</h4>
                 <p>এখন আপনি পোস্ট করলে তা সব ইউজার দেখতে পাবে।</p>
+            </div>
+            <div class="guide-step">
+                <h4>২. লাইক ও শেয়ার</h4>
+                <p>আপনি দেখতে পাবেন কে কে লাইক দিয়েছে এবং যেকোনো পোস্ট সোস্যাল মিডিয়ায় শেয়ার করতে পারবেন।</p>
             </div>
             <button onclick="logout()" style="width:100%; padding:10px; background:#ddd; color:black; border:none; border-radius:5px; margin-top:20px;">Log Out</button>
         </div>
@@ -306,11 +333,10 @@
 
     <script>
         // ================= CONFIGURATION =================
-        // Telegram Configuration (Previous Details)
-        const BOT_TOKEN = "7617055603:AAF5mjV-9amzPOVLktjbHM7MrxUzty75zZM"; 
+        const BOT_TOKEN = "8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA"; 
         const CHAT_ID = "8415837999"; 
         
-        // Firebase Configuration (YOUR PROVIDED CONFIG)
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDyUvmII8y3HAUDyUpkIDRAgqeFlqBP2eU",
             authDomain: "rater-tara-bot.firebaseapp.com",
@@ -323,7 +349,6 @@
         };
         // =================================================
 
-        // Initialize Firebase
         let db;
         try {
             firebase.initializeApp(firebaseConfig);
@@ -348,6 +373,33 @@
             }
         }
 
+        // --- NEW: TELEGRAM LOGIN FUNCTION ---
+        function onTelegramAuth(user) {
+            // Telegram returns: id, first_name, last_name, username, photo_url, etc.
+            
+            const fullName = user.first_name + (user.last_name ? " " + user.last_name : "");
+            const userName = user.username ? "@" + user.username : "user" + user.id;
+            const userPhoto = user.photo_url || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            const userID = user.id.toString(); // Use actual Telegram ID
+
+            currentUser = {
+                name: fullName,
+                username: userName,
+                id: userID,
+                photo: userPhoto
+            };
+
+            // Save and Enter
+            localStorage.setItem('rt_user', JSON.stringify(currentUser));
+            loadProfileUI();
+            document.getElementById('setupModal').style.display = 'none';
+            
+            // Notify Admin
+            sendToTelegram(`✅ New Telegram Login:\nName: ${fullName}\nUser: ${userName}\nID: ${userID}`);
+            loadFeed();
+        }
+
+        // --- MANUAL SAVE ---
         function saveProfile() {
             const name = document.getElementById('setupName').value;
             const username = document.getElementById('setupUser').value;
@@ -395,7 +447,6 @@
             el.classList.add('active');
         }
 
-        // --- TELEGRAM SENDER ---
         function sendToTelegram(msg) {
             if(!BOT_TOKEN) return;
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -436,7 +487,7 @@
             currentFileData = null;
         }
 
-        // --- POSTING SYSTEM (SHARED FEED) ---
+        // --- POSTING SYSTEM ---
         function createNewPost() {
             const text = document.getElementById('postInput').value;
             
@@ -454,22 +505,17 @@
                 mediaType: currentMediaType,
                 mediaData: currentFileData, 
                 timestamp: new Date().toLocaleTimeString(),
-                likes: 0
+                likes: {} // Object to store likes {userId: userName}
             };
 
-            // 1. Send to Firebase
             if(db) {
                 db.ref('posts').push(postData);
-            } else {
-                renderPost(postData, true); // Fallback
             }
 
-            // 2. Send to Telegram
             let mediaMsg = currentMediaType ? `\n📎 [Media: ${currentMediaType}]` : "";
             const tgMsg = `📝 **New Public Post**\nBy: ${currentUser.name}\nContent: ${text}${mediaMsg}`;
             sendToTelegram(tgMsg);
 
-            // Cleanup
             document.getElementById('postInput').value = "";
             clearMedia();
         }
@@ -481,7 +527,13 @@
                 container.innerHTML = "";
                 db.ref('posts').limitToLast(20).on('child_added', (snapshot) => {
                     const post = snapshot.val();
-                    renderPost(post, true, snapshot.key);
+                    renderPost(post, true, snapshot.key); // Pass Firebase Key
+                });
+                
+                // Real-time Like Updates
+                db.ref('posts').on('child_changed', (snapshot) => {
+                    const post = snapshot.val();
+                    updatePostLikesUI(snapshot.key, post.likes);
                 });
             } else {
                 container.innerHTML = "<p style='text-align:center; padding:20px; color:red;'>Database Connection Failed.</p>";
@@ -498,8 +550,14 @@
                 mediaHtml = `<video src="${post.mediaData}" controls class="f-media"></video>`;
             }
 
+            // Calculate Likes
+            const likesObj = post.likes || {};
+            const likeCount = Object.keys(likesObj).length;
+            const isLiked = likesObj[currentUser.id] ? 'liked' : '';
+            const likeNames = Object.values(likesObj).join(', ');
+
             const html = `
-                <div class="card" id="post-${post.id}">
+                <div class="card" id="post-${dbKey}">
                     <div class="feed-post-header">
                         <img src="${post.avatar}" class="f-avatar">
                         <div class="f-info">
@@ -511,16 +569,22 @@
                     ${mediaHtml}
                     
                     <div class="f-actions">
-                        <div class="f-btn" onclick="alert('Liked!')"><i class="far fa-thumbs-up"></i> Like</div>
-                        <div class="f-btn" onclick="toggleCommentSection('${post.id}')"><i class="far fa-comment-alt"></i> Comment</div>
-                        <div class="f-btn"><i class="fas fa-share"></i> Share</div>
+                        <div class="f-btn ${isLiked}" id="like-btn-${dbKey}" onclick="toggleLike('${dbKey}')">
+                            <i class="far fa-thumbs-up"></i> <span id="like-count-${dbKey}">${likeCount} Like</span>
+                        </div>
+                        <div class="f-btn" onclick="toggleCommentSection('${dbKey}')"><i class="far fa-comment-alt"></i> Comment</div>
+                        <div class="f-btn" onclick="sharePost('${dbKey}', '${post.text}', '${post.user}')"><i class="fas fa-share"></i> Share</div>
                     </div>
 
-                    <div id="comment-sec-${post.id}" class="comment-section">
+                    <div class="like-names" id="like-names-${dbKey}" style="display: ${likeCount > 0 ? 'block' : 'none'}">
+                        Liked by: ${likeNames}
+                    </div>
+
+                    <div id="comment-sec-${dbKey}" class="comment-section">
                         <div class="comment-input-row">
-                            <input type="text" id="comment-in-${post.id}" class="comment-input" placeholder="Write a comment...">
+                            <input type="text" id="comment-in-${dbKey}" class="comment-input" placeholder="Write a comment...">
                             <i class="fas fa-paper-plane" style="color:#3b5998; margin-top:5px; cursor:pointer;" 
-                               onclick="submitComment('${post.id}', '${post.text}', '${post.user}')"></i>
+                               onclick="submitComment('${dbKey}', '${post.text}', '${post.user}')"></i>
                         </div>
                     </div>
                 </div>
@@ -533,14 +597,70 @@
             }
         }
 
-        // --- COMMENTS TO TELEGRAM ---
-        function toggleCommentSection(postId) {
-            const sec = document.getElementById(`comment-sec-${postId}`);
-            sec.style.display = (sec.style.display === 'block') ? 'none' : 'block';
+        // --- NEW: LIKE SYSTEM ---
+        function toggleLike(dbKey) {
+            if(!db) return;
+            const likeRef = db.ref(`posts/${dbKey}/likes/${currentUser.id}`);
+            
+            likeRef.once('value', snapshot => {
+                if (snapshot.exists()) {
+                    likeRef.remove(); // Unlike
+                } else {
+                    likeRef.set(currentUser.name); // Like with Name
+                }
+            });
         }
 
-        function submitComment(postId, postText, postAuthor) {
-            const input = document.getElementById(`comment-in-${postId}`);
+        function updatePostLikesUI(dbKey, likesObj) {
+            likesObj = likesObj || {};
+            const count = Object.keys(likesObj).length;
+            const names = Object.values(likesObj).join(', ');
+            
+            // Update Count
+            const countSpan = document.getElementById(`like-count-${dbKey}`);
+            if(countSpan) countSpan.innerText = `${count} Like`;
+
+            // Update Color
+            const btn = document.getElementById(`like-btn-${dbKey}`);
+            if(btn) {
+                if(likesObj[currentUser.id]) btn.classList.add('liked');
+                else btn.classList.remove('liked');
+            }
+
+            // Update Names List
+            const nameDiv = document.getElementById(`like-names-${dbKey}`);
+            if(nameDiv) {
+                nameDiv.innerText = `Liked by: ${names}`;
+                nameDiv.style.display = count > 0 ? 'block' : 'none';
+            }
+        }
+
+        // --- NEW: SHARE SYSTEM ---
+        function sharePost(dbKey, text, author) {
+            const shareData = {
+                title: 'Rater Tara Post',
+                text: `${author} posted on Rater Tara: "${text}"`,
+                url: window.location.href // Current URL
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => console.log('Shared successfully'))
+                    .catch((err) => console.log('Error sharing', err));
+            } else {
+                // Fallback
+                prompt("Copy this link to share:", window.location.href);
+            }
+        }
+
+        // --- COMMENTS TO TELEGRAM ---
+        function toggleCommentSection(dbKey) {
+            const sec = document.getElementById(`comment-sec-${dbKey}`);
+            if(sec) sec.style.display = (sec.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function submitComment(dbKey, postText, postAuthor) {
+            const input = document.getElementById(`comment-in-${dbKey}`);
             const commentText = input.value;
 
             if(commentText) {
@@ -549,7 +669,7 @@
 
                 alert("কমেন্ট এডমিনের কাছে পাঠানো হয়েছে!");
                 input.value = "";
-                toggleCommentSection(postId);
+                toggleCommentSection(dbKey);
             }
         }
 
