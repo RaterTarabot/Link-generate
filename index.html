@@ -9,147 +9,136 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
+    <!-- SDK ADDED -->
+    <script src='//libtl.com/sdk.js' data-zone='10265360' data-sdk='show_10265360'></script>
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary: #2563EB;
-            --like-color: #EF4444;
-            --bg-body: #F3F4F6;
-            --surface: #FFFFFF;
-            --text-main: #1F2937;
-            --text-sub: #6B7280;
-            --radius: 16px;
-            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            /* DARK THEME PALETTE */
+            --primary-gradient: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            --bg-body: #121212; 
+            --surface: #1e1e1e;
+            --glass-bg: rgba(30, 30, 30, 0.95);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --text-main: #e2e8f0;
+            --text-sub: #94a3b8;
+            --radius-card: 24px;
+            --radius-btn: 50px;
+            --like-color: #ff3b30;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-body); padding-bottom: 90px; color: var(--text-main); }
+        
+        body { 
+            background-color: var(--bg-body); 
+            background-image: radial-gradient(circle at 0% 0%, #2e1065 0%, transparent 50%), radial-gradient(circle at 100% 100%, #172554 0%, transparent 50%);
+            background-attachment: fixed;
+            padding-bottom: 100px; 
+            color: var(--text-main); 
+        }
 
-        /* HEADER */
+        /* HEADER UPDATED WITH LOGO */
         header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
             position: sticky; top: 0; z-index: 100;
-            padding: 15px 20px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
-            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            padding: 10px 20px;
+            border-bottom: var(--glass-border);
             display: flex; justify-content: space-between; align-items: center;
         }
-        .logo { font-size: 20px; font-weight: 800; color: var(--primary); }
-        .user-head-img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .brand-box { display: flex; align-items: center; gap: 10px; }
+        .app-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); }
+        .logo-text { 
+            font-size: 20px; font-weight: 800; 
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .user-head-img { 
+            width: 38px; height: 38px; border-radius: 50%; object-fit: cover; 
+            border: 2px solid #818cf8;
+        }
 
-        /* PAGE SECTIONS */
-        .page-section { display: none; padding-top: 10px; animation: fadeIn 0.3s; }
+        /* NOTICE BAR */
+        #noticeBar {
+            background: linear-gradient(90deg, #dc2626, #991b1b);
+            color: white; font-size: 13px; padding: 8px;
+            display: none; /* Hidden by default until data loads */
+        }
+
+        /* SECTIONS */
+        .page-section { display: none; padding-top: 15px; animation: slideUpFade 0.4s; }
         .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* CARDS */
         .card {
-            background: var(--surface); border-radius: var(--radius);
-            margin: 15px; padding: 15px;
-            box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.5);
+            background: var(--surface); 
+            border-radius: var(--radius-card);
+            margin: 0 16px 20px 16px; 
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: var(--glass-border);
+            color: var(--text-main);
         }
 
-        /* CREATE POST */
-        .create-box { display: flex; gap: 10px; align-items: center; }
-        .create-input {
-            flex: 1; background: #F9FAFB; border: none; padding: 12px 15px;
-            border-radius: 30px; font-size: 14px;
-        }
-        .create-input:focus { outline: 2px solid var(--primary); background: white; }
-        
-        .media-bar {
-            display: flex; justify-content: space-between; margin-top: 15px; padding-top: 10px;
-            border-top: 1px solid #F3F4F6;
-        }
-        .action-btn {
-            font-size: 13px; font-weight: 600; color: var(--text-sub);
-            display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 8px;
-        }
-        .post-btn {
-            background: var(--primary); color: white; border: none;
-            padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;
-        }
-
-        /* FEED POSTS */
-        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-        .p-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+        /* POSTS */
+        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .p-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
         .p-info h4 { font-size: 15px; font-weight: 700; color: var(--text-main); margin: 0; }
-        .p-info span { font-size: 11px; color: #9CA3AF; }
-        .p-text { font-size: 14px; line-height: 1.6; color: #374151; margin-bottom: 10px; }
-        .p-media { width: 100%; border-radius: 12px; margin-bottom: 10px; max-height: 350px; object-fit: cover; }
+        .p-info span { font-size: 11px; color: var(--text-sub); }
+        .p-text { font-size: 14px; line-height: 1.5; color: #d1d5db; margin-bottom: 10px; }
+        .p-media { width: 100%; border-radius: 15px; margin-bottom: 10px; max-height: 400px; object-fit: cover; }
         
         /* ACTIONS */
-        .p-actions { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #F3F4F6; }
-        .act-btn { 
-            color: var(--text-sub); font-size: 14px; display: flex; align-items: center; gap: 6px; 
-            cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: 0.2s;
-        }
-        .act-btn:active { background: #F3F4F6; }
-        .act-btn.liked { color: var(--like-color); font-weight: 600; }
-        .act-btn.liked i { animation: pop 0.3s ease; }
-        @keyframes pop { 50% { transform: scale(1.3); } }
+        .p-actions { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .act-btn { color: var(--text-sub); font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 12px; border-radius: 20px; transition: 0.3s; }
+        .act-btn:active { background: #333; transform: scale(0.95); }
+        .act-btn.liked { color: var(--like-color); background: rgba(255, 59, 48, 0.1); }
 
-        /* COMMENT SECTION */
-        .comment-section { display: none; margin-top: 15px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
-        .comment-input-area { display: flex; gap: 10px; margin-bottom: 10px; }
-        .comment-list { max-height: 150px; overflow-y: auto; font-size: 13px; }
-        .single-comment { background: #f9fafb; padding: 8px; border-radius: 8px; margin-bottom: 5px; }
-        .sc-name { font-weight: bold; font-size: 12px; color: var(--text-main); }
-        
-        /* DELETE BUTTON */
-        .delete-my-post {
-            margin-left: auto; color: #EF4444; background: #FEF2F2; 
-            padding: 5px 10px; border-radius: 8px; font-size: 12px; cursor: pointer;
+        /* COMMENT & SEARCH INPUTS */
+        .comment-section { display: none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; }
+        .comment-input-area { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
+        .create-input {
+            flex: 1; background: #2d2d35; border: 1px solid #3f3f46; padding: 10px 15px;
+            border-radius: 20px; font-size: 13px; color: white; outline: none;
         }
+        .post-btn { background: var(--primary-gradient); color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; cursor: pointer; }
+        .single-comment { background: #27272a; padding: 8px 12px; border-radius: 10px; margin-bottom: 6px; border-left: 2px solid #818cf8; font-size: 12px; color: #d1d5db; }
 
         /* BOTTOM NAV */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: var(--surface);
-            display: flex; justify-content: space-around;
-            padding: 15px 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 380px;
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex; justify-content: space-evenly;
+            padding: 12px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 30px;
             z-index: 999;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .nav-item { font-size: 24px; color: #9CA3AF; transition: 0.3s; position: relative; cursor: pointer; }
-        .nav-item.active { color: var(--primary); transform: translateY(-5px); }
-        .nav-item.active::after {
-            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-            width: 5px; height: 5px; background: var(--primary); border-radius: 50%;
-        }
+        .nav-item { font-size: 20px; color: #6b7280; transition: 0.3s; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; }
+        .nav-item.active { color: white; background: var(--primary-gradient); box-shadow: 0 5px 15px rgba(129, 140, 248, 0.4); transform: translateY(-3px); }
 
-        /* PROFILE UI */
-        .profile-card { text-align: center; padding: 30px; }
-        .prof-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 10px; }
-        
-        /* AUTH MODAL */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 1000;
-            justify-content: center; align-items: center;
+        /* PROFILE */
+        .profile-card { text-align: center; padding: 30px 20px; }
+        .prof-img { 
+            width: 100px; height: 100px; border-radius: 50%; padding: 3px; 
+            background: linear-gradient(#1e1e1e, #1e1e1e), var(--primary-gradient);
+            background-origin: border-box; background-clip: content-box, border-box;
+            margin-bottom: 15px; border: 3px solid transparent;
         }
-        .setup-card { background: white; width: 90%; max-width: 350px; padding: 25px; border-radius: 24px; text-align: center; }
-        
-        /* MEDIA PREVIEW */
-        .preview-area { display: none; margin-top: 10px; position: relative; }
-        .remove-media { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5); color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .search-item-box { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #333; }
 
-        /* --- NEW SHARE SHEET CSS --- */
-        .share-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index: 2000; align-items: flex-end; }
-        .share-box { background: white; width: 100%; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px; animation: slideUp 0.3s; padding-bottom: 40px; }
-        @keyframes slideUp { from {transform: translateY(100%);} to {transform: translateY(0);} }
-        
-        .share-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .share-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align: center; }
-        .share-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
-        .share-circle { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; transition: 0.2s; }
-        .share-circle:active { transform: scale(0.9); }
-        .share-label { font-size: 11px; color: #555; }
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .setup-card { background: #1e1e1e; width: 90%; max-width: 320px; padding: 30px 20px; border-radius: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -157,120 +146,80 @@
     <!-- AUTH MODAL -->
     <div id="authModal" class="modal-overlay" style="display: flex;">
         <div class="setup-card">
-            <h2 style="color:var(--primary); margin-bottom:5px;">Rater Tara</h2>
-            <p style="font-size:12px; color:#666; margin-bottom:20px;">Welcome to the ⎯⁠⁠⁠🧋🂱  𝐑𝐀𝐓𝐄𝐑 𝐓𝐀𝐑𝐀 আপনাকে স্বাগতম👏
-
-𝐇𝐢 𝐁𝐚𝐛𝐲༆
-🔥 ফ্রি প্রিমিয়াম  লাইভ সিক্রেট শো পেতে আপনার টেলিগ্রাম (ইউজার নাম দিন)</p>
+            <!-- LOGO IN MODAL -->
+            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEgHegSTsXVIOKWGvuBgmXMgDgEqL_VbRaCtNwi8hOq8BgW1uGxounxjFaZ0-kA47Ula273x0iCbCESPayuX1OU8uX0DNPHxTPHRp_rw2tKRZKSH5jBZUHPZraME07cIz0sbvDjOVUmPI5FXa1sn2DsR7e4ZhFGYZuqYC6AXV8Txdw3Cz2XcOzqDoQAJDVI=s640" style="width:60px; height:60px; border-radius:12px; margin-bottom:10px;">
+            <h2 style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom:5px;">Rater Tara</h2>
+            <p style="font-size:12px; color:#94a3b8; margin-bottom:20px;">Join the community now!</p>
+            
             <div style="margin-bottom:20px;">
                 <script async src="https://telegram.org/js/telegram-widget.js?22" 
                         data-telegram-login="ratertara_bot" data-size="large" data-userpic="true" data-radius="12" 
                         data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
             </div>
-            <p style="font-size:11px; color:#aaa; margin-bottom:10px;">OR MANUAL SETUP</p>
-            <input type="text" id="setupName" placeholder="Full Name" class="create-input" style="width:100%; margin-bottom:10px; border:1px solid #ddd;">
-            <input type="text" id="setupUser" placeholder="@username" class="create-input" style="width:100%; margin-bottom:15px; border:1px solid #ddd;">
-            <button onclick="manualSave()" class="post-btn" style="width:100%; padding:12px;">Get Started</button>
+            <p style="font-size:10px; color:#555; margin-bottom:10px;">OR MANUAL SETUP</p>
+            <input type="text" id="setupName" placeholder="Full Name" class="create-input" style="width:100%; margin-bottom:10px;">
+            <input type="text" id="setupUser" placeholder="@username" class="create-input" style="width:100%; margin-bottom:15px;">
+            <button onclick="manualSave()" class="post-btn" style="width:100%;">Get Started</button>
         </div>
     </div>
 
-    <!-- NEW SHARE MODAL -->
-    <div id="shareModal" class="share-modal" onclick="closeShare(event)">
-        <div class="share-box" onclick="event.stopPropagation()">
-            <div class="share-header">
-                <h3 style="margin:0;">Share via</h3>
-                <i class="fas fa-times" style="font-size:20px; cursor:pointer; color:#888;" onclick="closeShare()"></i>
-            </div>
-            <div class="share-grid">
-                <!-- Facebook -->
-                <div class="share-item" onclick="shareTo('facebook')">
-                    <div class="share-circle" style="background: #1877F2;"><i class="fab fa-facebook-f"></i></div>
-                    <span class="share-label">Facebook</span>
-                </div>
-                <!-- WhatsApp -->
-                <div class="share-item" onclick="shareTo('whatsapp')">
-                    <div class="share-circle" style="background: #25D366;"><i class="fab fa-whatsapp"></i></div>
-                    <span class="share-label">WhatsApp</span>
-                </div>
-                <!-- Telegram -->
-                <div class="share-item" onclick="shareTo('telegram')">
-                    <div class="share-circle" style="background: #0088cc;"><i class="fab fa-telegram-plane"></i></div>
-                    <span class="share-label">Telegram</span>
-                </div>
-                <!-- Twitter -->
-                <div class="share-item" onclick="shareTo('twitter')">
-                    <div class="share-circle" style="background: #000000;"><i class="fab fa-x-twitter"></i></div>
-                    <span class="share-label">X</span>
-                </div>
-                <!-- Copy Link -->
-                <div class="share-item" onclick="shareTo('copy')">
-                    <div class="share-circle" style="background: #6c757d;"><i class="fas fa-link"></i></div>
-                    <span class="share-label">Copy Link</span>
-                </div>
-                <!-- Native Share -->
-                <div class="share-item" onclick="shareTo('native')">
-                    <div class="share-circle" style="background: var(--primary);"><i class="fas fa-share-alt"></i></div>
-                    <span class="share-label">More</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- HEADER -->
+    <!-- HEADER with LOGO -->
     <header>
-        <div class="logo">Rater Tara</div>
+        <div class="brand-box">
+            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEgHegSTsXVIOKWGvuBgmXMgDgEqL_VbRaCtNwi8hOq8BgW1uGxounxjFaZ0-kA47Ula273x0iCbCESPayuX1OU8uX0DNPHxTPHRp_rw2tKRZKSH5jBZUHPZraME07cIz0sbvDjOVUmPI5FXa1sn2DsR7e4ZhFGYZuqYC6AXV8Txdw3Cz2XcOzqDoQAJDVI=s640" class="app-logo">
+            <div class="logo-text">Rater Tara</div>
+        </div>
         <img id="headerAvatar" src="" class="user-head-img" onclick="switchTab('profile')">
     </header>
 
+    <!-- NOTICE BAR (Marquee) -->
+    <div id="noticeBar">
+        <marquee id="marqueeText" behavior="scroll" direction="left">Welcome to Rater Tara App...</marquee>
+    </div>
+
     <!-- HOME SECTION -->
     <div id="home" class="page-section active">
-        <div class="card">
-            <div class="create-box">
-                <img id="smallAvatar" src="" class="p-avatar">
-                <input type="text" id="postInput" class="create-input" placeholder="What's on your mind?">
-            </div>
-            <div id="previewArea" class="preview-area">
-                <div class="remove-media" onclick="clearMedia()">×</div>
-                <div id="mediaContainer"></div>
-            </div>
-            <div class="media-bar">
-                <label class="action-btn">
-                    <i class="fas fa-image" style="color:#10B981"></i> Photo
-                    <input type="file" id="photoUpload" hidden accept="image/*" onchange="handleMedia(this, 'image')">
-                </label>
-                <label class="action-btn">
-                    <i class="fas fa-video" style="color:#F59E0B"></i> Video
-                    <input type="file" id="videoUpload" hidden accept="video/*" onchange="handleMedia(this, 'video')">
-                </label>
-                <button onclick="publishPost()" class="post-btn"><i class="fas fa-paper-plane"></i> Post</button>
-            </div>
-        </div>
         <div id="feedContainer">
-            <div style="text-align:center; padding:20px; color:#999;"><i class="fas fa-circle-notch fa-spin"></i> Loading Feed...</div>
+            <div style="text-align:center; padding:50px; color:#555;">Loading...</div>
         </div>
     </div>
 
-    <!-- OTHER SECTIONS -->
+    <!-- SEARCH SECTION -->
     <div id="search" class="page-section">
-        <div class="card">
+        <div class="card" style="min-height: 400px;">
             <h3>Find Friends</h3>
-            <input type="text" class="create-input" placeholder="Search users..." style="width:100%; margin-top:10px; border:1px solid #ddd;">
-            <p style="text-align:center; color:#888; margin-top:20px;">Coming Soon</p>
+            <input type="text" id="searchInput" class="create-input" placeholder="Search by name or ID..." onkeyup="searchUsers()" style="margin-top:15px; width:100%;">
+            <div id="searchResults" style="margin-top:20px;">
+                <p style="text-align:center; color:#555; padding:20px;">Type to search...</p>
+            </div>
         </div>
     </div>
+
+    <!-- MESSAGES SECTION -->
     <div id="messages" class="page-section">
-        <div class="card">
+        <div class="card" style="text-align:center; padding:50px 20px;">
+            <i class="fas fa-comment-slash" style="font-size:40px; color:#333; margin-bottom:15px;"></i>
             <h3>Messages</h3>
-            <p style="text-align:center; color:#888; padding:20px;">No new messages</p>
+            <p style="color:#555;">No new messages</p>
         </div>
     </div>
+    
+    <!-- PROFILE SECTION -->
     <div id="profile" class="page-section">
         <div class="card profile-card">
             <img id="profileAvatar" src="" class="prof-img">
-            <h2 id="profileName">Loading...</h2>
-            <p id="profileUser" style="color:#666;">@...</p>
-            <div style="background:#EBF5FF; color:var(--primary); display:inline-block; padding:5px 15px; border-radius:20px; margin-top:10px; font-weight:bold; font-size:12px;" id="profileID">ID: ...</div>
-            <button onclick="logout()" style="width:100%; margin-top:20px; padding:12px; background:#FEE2E2; color:#EF4444; border:none; border-radius:10px; font-weight:bold;">Log Out</button>
+            <h2 id="profileName">...</h2>
+            <p id="profileUser" style="color:#94a3b8;">@...</p>
+            <div id="profileID" style="background: rgba(129, 140, 248, 0.1); color: #818cf8; padding: 5px 15px; border-radius: 15px; display:inline-block; margin-top:10px; font-size:12px;">ID: ...</div>
+
+            <!-- Support Team Link -->
+            <a href="https://t.me/+-_yWNzhPb_c4OTg1" target="_blank" style="text-decoration:none;">
+                <div style="margin-top: 25px; background: #27272a; padding: 12px; border-radius: 15px; color: #e2e8f0; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #3f3f46;">
+                    <i class="fas fa-headset" style="color: #818cf8;"></i> Support Team
+                </div>
+            </a>
+
+            <button onclick="logout()" style="width:100%; margin-top:15px; padding:12px; background:rgba(239, 68, 68, 0.1); color:#EF4444; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">Log Out</button>
         </div>
     </div>
 
@@ -295,12 +244,10 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const BOT_TOKEN = "8279372040:AAGKfFsmnkI5ihQE-T2v6hU47dEoZ892_nA";
-        const CHAT_ID = "8415837999";
 
         let currentUser = null;
-        let mediaFile = { type: null, data: null };
-        let shareDataTemp = { text: "", link: "" };
+        // PROVIDED PROFILE PICTURE
+        const customPhotoLink = "https://blogger.googleusercontent.com/img/a/AVvXsEgHegSTsXVIOKWGvuBgmXMgDgEqL_VbRaCtNwi8hOq8BgW1uGxounxjFaZ0-kA47Ula273x0iCbCESPayuX1OU8uX0DNPHxTPHRp_rw2tKRZKSH5jBZUHPZraME07cIz0sbvDjOVUmPI5FXa1sn2DsR7e4ZhFGYZuqYC6AXV8Txdw3Cz2XcOzqDoQAJDVI=s640"; 
 
         function checkAuth() {
             const stored = localStorage.getItem('rt_user_ultra');
@@ -309,15 +256,16 @@
                 document.getElementById('authModal').style.display = 'none';
                 loadUI();
                 listenFeed();
+                listenNotice(); // Listen for admin notices
             }
         }
         function onTelegramAuth(user) {
-            saveUser({ name: user.first_name + " " + (user.last_name||""), username: "@"+user.username, id: user.id.toString(), photo: user.photo_url || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
+            saveUser({ name: user.first_name + " " + (user.last_name||""), username: "@"+user.username, id: user.id.toString(), photo: user.photo_url || customPhotoLink });
         }
         function manualSave() {
             const name = document.getElementById('setupName').value;
             const user = document.getElementById('setupUser').value;
-            if(name && user) saveUser({ name: name, username: user, id: "U-" + Math.floor(10000+Math.random()*90000), photo: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
+            if(name && user) saveUser({ name: name, username: user, id: "U-" + Math.floor(10000+Math.random()*90000), photo: customPhotoLink });
         }
         function saveUser(u) {
             currentUser = u;
@@ -326,10 +274,10 @@
             document.getElementById('authModal').style.display = 'none';
             loadUI();
             listenFeed();
+            listenNotice();
         }
         function loadUI() {
             document.getElementById('headerAvatar').src = currentUser.photo;
-            document.getElementById('smallAvatar').src = currentUser.photo;
             document.getElementById('profileAvatar').src = currentUser.photo;
             document.getElementById('profileName').innerText = currentUser.name;
             document.getElementById('profileUser').innerText = currentUser.username;
@@ -343,146 +291,65 @@
             if(el) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         }
 
-        // POSTING
-        function handleMedia(input, type) {
-            const file = input.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    mediaFile = { type: type, data: e.target.result };
-                    const box = document.getElementById('mediaContainer');
-                    document.getElementById('previewArea').style.display = 'block';
-                    if(type === 'image') box.innerHTML = `<img src="${e.target.result}" style="width:100%; border-radius:10px;">`;
-                    else box.innerHTML = `<video src="${e.target.result}" controls style="width:100%; border-radius:10px;"></video>`;
+        // LISTEN FOR NOTICE
+        function listenNotice() {
+            db.ref('appNotice').on('value', snap => {
+                const notice = snap.val();
+                if(notice && notice.text) {
+                    document.getElementById('noticeBar').style.display = 'block';
+                    document.getElementById('marqueeText').innerText = notice.text;
+                } else {
+                    document.getElementById('noticeBar').style.display = 'none';
                 }
-                reader.readAsDataURL(file);
-            }
-        }
-        function clearMedia() {
-            mediaFile = { type: null, data: null };
-            document.getElementById('previewArea').style.display = 'none';
-            document.getElementById('mediaContainer').innerHTML = '';
-            document.getElementById('photoUpload').value = '';
-            document.getElementById('videoUpload').value = '';
-        }
-        function publishPost() {
-            const text = document.getElementById('postInput').value;
-            if(!text && !mediaFile.data) return alert("Write something!");
-            const postData = { id: Date.now(), userId: currentUser.id, userName: currentUser.name, userPhoto: currentUser.photo, text: text, mediaType: mediaFile.type, mediaData: mediaFile.data, time: new Date().toLocaleTimeString(), likes: 0 };
-            db.ref('posts').push(postData);
-            document.getElementById('postInput').value = "";
-            clearMedia();
+            });
         }
 
         // FEED
         function listenFeed() {
             const cont = document.getElementById('feedContainer'); cont.innerHTML = "";
             db.ref('posts').limitToLast(50).on('child_added', snap => renderPost(snap.val(), snap.key, true));
-            db.ref('posts').on('child_changed', snap => updatePostUI(snap.key, snap.val()));
-            db.ref('posts').on('child_removed', snap => { const el = document.getElementById('post-'+snap.key); if(el) el.remove(); });
         }
         function renderPost(post, key, prepend) {
-            const isMine = (post.userId === currentUser.id);
-            const delBtn = isMine ? `<div class="delete-my-post" onclick="deleteMyPost('${key}')"><i class="fas fa-trash"></i></div>` : '';
             const mediaHTML = post.mediaType === 'image' ? `<img src="${post.mediaData}" class="p-media">` : (post.mediaType === 'video' ? `<video src="${post.mediaData}" controls class="p-media"></video>` : '');
-            
             const likesObj = post.likes || {};
             const isLiked = likesObj[currentUser.id] ? 'liked' : '';
-            const likeCount = Object.keys(likesObj).length;
-
-            // Comments
-            const commentsObj = post.comments || {};
-            let commentHTML = "";
-            Object.values(commentsObj).forEach(c => {
-                commentHTML += `<div class="single-comment"><span class="sc-name">${c.name}:</span> ${c.text}</div>`;
-            });
+            const count = Object.keys(likesObj).length || 'Like';
 
             const html = `
                 <div class="card" id="post-${key}">
-                    <div class="post-header"><img src="${post.userPhoto}" class="p-avatar"><div class="p-info"><h4>${post.userName}</h4><span>${post.time}</span></div>${delBtn}</div>
+                    <div class="post-header"><img src="${post.userPhoto}" class="p-avatar"><div class="p-info"><h4>${post.userName}</h4><span>${post.time}</span></div></div>
                     <div class="p-text">${post.text}</div>${mediaHTML}
                     <div class="p-actions">
-                        <div class="act-btn ${isLiked}" id="like-btn-${key}" onclick="toggleLike('${key}')"><i class="${isLiked?'fas':'far'} fa-heart"></i> <span id="like-txt-${key}">${likeCount||'Like'}</span></div>
-                        <div class="act-btn" onclick="toggleCommentSection('${key}')"><i class="far fa-comment"></i> Comment</div>
-                        <div class="act-btn" onclick="openShareModal('${key}', '${post.text}')"><i class="fas fa-share"></i> Share</div>
-                    </div>
-                    <div id="comment-sec-${key}" class="comment-section">
-                        <div class="comment-input-area"><input type="text" id="comm-in-${key}" class="create-input" placeholder="Comment..."><button onclick="submitComment('${key}')" class="post-btn"><i class="fas fa-paper-plane"></i></button></div>
-                        <div id="comm-list-${key}" class="comment-list">${commentHTML}</div>
+                        <div class="act-btn ${isLiked}" onclick="toggleLike('${key}')"><i class="${isLiked?'fas':'far'} fa-heart"></i> ${count}</div>
                     </div>
                 </div>`;
-            const cont = document.getElementById('feedContainer');
-            if(prepend) cont.insertAdjacentHTML('afterbegin', html); else cont.insertAdjacentHTML('beforeend', html);
+            if(prepend) document.getElementById('feedContainer').insertAdjacentHTML('afterbegin', html);
+            else document.getElementById('feedContainer').insertAdjacentHTML('beforeend', html);
         }
-
         function toggleLike(key) {
             const ref = db.ref(`posts/${key}/likes/${currentUser.id}`);
             ref.once('value', snap => { if(snap.exists()) ref.remove(); else ref.set(true); });
         }
-        function toggleCommentSection(key) {
-            const sec = document.getElementById(`comment-sec-${key}`);
-            sec.style.display = sec.style.display === 'block' ? 'none' : 'block';
-        }
-        function submitComment(key) {
-            const val = document.getElementById(`comm-in-${key}`).value;
-            if(val) { db.ref(`posts/${key}/comments`).push({ name: currentUser.name, text: val }); document.getElementById(`comm-in-${key}`).value = ""; }
-        }
-        function updatePostUI(key, post) {
-            const likesObj = post.likes || {};
-            const isLiked = likesObj[currentUser.id];
-            const btn = document.getElementById(`like-btn-${key}`);
-            const txt = document.getElementById(`like-txt-${key}`);
-            if(btn && txt) {
-                txt.innerText = Object.keys(likesObj).length || 'Like';
-                btn.className = `act-btn ${isLiked ? 'liked' : ''}`;
-                btn.querySelector('i').className = `${isLiked ? 'fas' : 'far'} fa-heart`;
-            }
-            // Update comments
-            const commentsObj = post.comments || {};
-            const list = document.getElementById(`comm-list-${key}`);
-            if(list) {
-                let html = "";
-                Object.values(commentsObj).forEach(c => {
-                    html += `<div class="single-comment"><span class="sc-name">${c.name}:</span> ${c.text}</div>`;
+
+        // SEARCH
+        function searchUsers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resBox = document.getElementById('searchResults');
+            if(query.length < 1) { resBox.innerHTML = '<p style="text-align:center; color:#555; padding:20px;">Type to search...</p>'; return; }
+
+            db.ref('users').once('value', snap => {
+                resBox.innerHTML = "";
+                snap.forEach(child => {
+                    const u = child.val();
+                    if((u.name && u.name.toLowerCase().includes(query)) || (u.id && u.id.toString().includes(query))) {
+                        resBox.innerHTML += `
+                            <div class="search-item-box">
+                                <img src="${u.photo}" style="width:40px; height:40px; border-radius:50%;">
+                                <div><div style="font-weight:bold; color:#e2e8f0;">${u.name}</div><div style="font-size:12px; color:#94a3b8;">${u.username}</div></div>
+                            </div>`;
+                    }
                 });
-                list.innerHTML = html;
-            }
-        }
-        function deleteMyPost(key) { if(confirm("Delete post?")) db.ref('posts/'+key).remove(); }
-
-        // --- NEW SHARE LOGIC ---
-        function openShareModal(key, text) {
-            shareDataTemp.text = text;
-            shareDataTemp.link = window.location.href; // In real app, use deep link
-            document.getElementById('shareModal').style.display = 'flex';
-        }
-        
-        function closeShare(e) {
-            if(!e || e.target.id === 'shareModal' || e.target.classList.contains('fa-times')) {
-                document.getElementById('shareModal').style.display = 'none';
-            }
-        }
-
-        function shareTo(platform) {
-            const txt = encodeURIComponent(shareDataTemp.text);
-            const url = encodeURIComponent(shareDataTemp.link);
-            let finalUrl = "";
-
-            if(platform === 'facebook') finalUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-            else if(platform === 'whatsapp') finalUrl = `https://api.whatsapp.com/send?text=${txt}%20${url}`;
-            else if(platform === 'telegram') finalUrl = `https://t.me/share/url?url=${url}&text=${txt}`;
-            else if(platform === 'twitter') finalUrl = `https://twitter.com/intent/tweet?text=${txt}&url=${url}`;
-            else if(platform === 'copy') {
-                navigator.clipboard.writeText(shareDataTemp.text + " " + shareDataTemp.link);
-                alert("Link copied!");
-                closeShare();
-                return;
-            } else if(platform === 'native') {
-                if(navigator.share) navigator.share({ title: 'Rater Tara', text: shareDataTemp.text, url: shareDataTemp.link });
-            }
-
-            if(finalUrl) window.open(finalUrl, '_blank');
-            closeShare();
+            });
         }
 
         checkAuth();
